@@ -1,17 +1,15 @@
 const { App } = require('@slack/bolt');
-const { createServer } = require('http');
 const { SocketModeReceiver } = require('@slack/socket-mode');
 const axios = require('axios');
-
-const app = new App({
-  token: process.env.SLACK_BOT_TOKEN,
-  appToken: process.env.SLACK_APP_TOKEN,
-  socketMode: true,
-});
 
 const receiver = new SocketModeReceiver({
   appToken: process.env.SLACK_APP_TOKEN,
   logLevel: 'debug',
+});
+
+const app = new App({
+  token: process.env.SLACK_BOT_TOKEN,
+  receiver: receiver,
 });
 
 app.event('app_mention', async ({ event, context, client }) => {
@@ -43,10 +41,5 @@ app.event('app_mention', async ({ event, context, client }) => {
 
 (async () => {
   await app.start();
-  console.log('⚡️ Bolt app is running!');
-
-  const server = createServer(expressReceiver.app);
-  receiver.start(server).then(() => {
-    console.log('⚡️ Bolt app is running with Socket mode!');
-  });
+  console.log('⚡️ Bolt app is running with Socket mode!');
 })();
