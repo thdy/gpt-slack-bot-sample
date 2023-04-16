@@ -1,14 +1,9 @@
 const { App, ExpressReceiver } = require('@slack/bolt');
-const axios = require('axios');
 
-const expressReceiver = new ExpressReceiver({
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-});
-
+const receiver = new ExpressReceiver({ signingSecret: process.env.SLACK_SIGNING_SECRET });
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET,
-  receiver: expressReceiver,
+  receiver: receiver,
 });
 
 app.event('app_mention', async ({ event, context, client }) => {
@@ -40,6 +35,12 @@ app.event('app_mention', async ({ event, context, client }) => {
 
 app.error((error) => {
   console.error(error);
+});
+
+// ポート3000番でアプリを起動
+receiver.router.get('/', (req, res) => {
+  const challenge = req.query.challenge;
+  res.send({ challenge });
 });
 
 (async () => {
