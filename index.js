@@ -8,7 +8,7 @@ const expressReceiver = new ExpressReceiver({
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
-  receiver: expressReceiver,
+  signingSecret: process.env.SLACK_SIGNING_SECRET
 });
 
 app.event('app_mention', async ({ event, context, client }) => {
@@ -36,6 +36,9 @@ app.event('app_mention', async ({ event, context, client }) => {
   } catch (error) {
     console.error(error);
   }
+});
+app.error((error) => {
+  console.error(error);
 });
 
 module.exports = expressReceiver.app;
