@@ -3,12 +3,12 @@ const axios = require('axios');
 
 const expressReceiver = new ExpressReceiver({
   signingSecret: process.env.SLACK_SIGNING_SECRET,
-  processBeforeResponse: true,
 });
 
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
-  signingSecret: process.env.SLACK_SIGNING_SECRET
+  signingSecret: process.env.SLACK_SIGNING_SECRET,
+  receiver: expressReceiver,
 });
 
 app.event('app_mention', async ({ event, context, client }) => {
@@ -37,8 +37,12 @@ app.event('app_mention', async ({ event, context, client }) => {
     console.error(error);
   }
 });
+
 app.error((error) => {
   console.error(error);
 });
 
-module.exports = expressReceiver.app;
+(async () => {
+  await app.start(process.env.PORT || 3000);
+  console.log('⚡️ Bolt app is running!');
+})();
