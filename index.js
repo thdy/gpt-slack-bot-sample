@@ -41,10 +41,6 @@ app.event('app_mention', async ({ event, context, client }) => {
   }
 });
 
-app.error((error) => {
-  console.error(error);
-});
-
 (async () => {
   await app.start();
   console.log('⚡️ Bolt app is running!');
