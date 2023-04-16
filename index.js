@@ -10,6 +10,7 @@ const socketModeClient = new SocketModeClient({
 const app = new App({
   token: process.env.SLACK_BOT_TOKEN,
   receiver: socketModeClient.adapter,
+  socketMode: true,
 });
 
 app.event('app_mention', async ({ event, context, client }) => {
